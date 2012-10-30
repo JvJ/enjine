@@ -1,0 +1,49 @@
+(ns triangleman
+  (:import (org.jbox2d.dynamics World
+                                BodyDef
+                                Body
+                                BodyType
+                                Fixture
+                                FixtureDef))
+  (:use [enjine.core]
+        [enjine.core.input]))
+
+
+(defn makeTriangleMan
+  [x y scale]
+  (let [forward [(* scale 5000) 0]
+        turn (* scale 5000); In radians
+        verts [[1 0] [-2 1] [-2 -1]]
+        s-verts (map (comp vec (partial map #(* scale %))) verts)
+        pb (add-poly-body :pos [x y]
+                               :vel [0 0]
+                               :dens 1
+                               :verts s-verts)
+        _ (.setAngularDamping pb 1.0)
+        ]
+    {:phys-body pb
+     :forward forward
+     :turn turn
+     :updates [
+               (fn [m]
+                 (cond
+                  (@*keys-held* "w")
+                  (.applyLinearImpulse (:phys-body m)
+                                       (.getWorldVector (:phys-body m) (v-b2v forward))
+                                       (.getWorldPoint (:phys-body m) (v-b2v [0 0])))
+                  (@*keys-held* "a")
+                  (.applyAngularImpulse (:phys-body m) (float turn))
+                  (@*keys-held* "d")
+                  (.applyAngularImpulse (:phys-body m) (- (float turn))))
+                 (let [newV (cond
+                             (@*keys-pressed* "=") (v+ (:forward m) [(* 100 scale) 0])
+                             (@*keys-pressed* "-") (v- (:forward m) [(* 100 scale) 0])
+                             :else (:forward m))
+                       newT (cond
+                             (@*keys-pressed* "[") (+ (:turn m) (* 100 scale))
+                             (@*keys-pressed* "]") (- (:turn m) (* 100 scale))
+                             :else (:turn m))]
+                   (assoc m :turn newT :forward newV)
+                   ))
+               ]
+     }))

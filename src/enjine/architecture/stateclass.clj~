@@ -1,0 +1,7 @@
+(ns enjine.architecture.stateclass)
+
+(defprotocol StateClass
+  ""
+  (state [] "Get current state.")
+  (trans [st] "Transition to new state.")
+  

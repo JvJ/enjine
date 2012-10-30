@@ -1,3 +1,4 @@
+
 (ns enjine.core.EnjineDebug
   (:use [penumbra.opengl])
   (:import (org.jbox2d.common IViewportTransform
@@ -44,7 +45,7 @@
   
 (defn -drawCircle
   ^void [this ^Vec2 center ^float radius ^Color3f clr]
-  (println "drawCircle is taking place!")
+  ;(println "drawCircle is taking place!")
   (circle-draw [(.x center) (.y center)]
                radius
                [(.x clr) (.y clr) (.z clr)]
@@ -52,7 +53,7 @@
 
 (defn -drawSolidCircle
   ^void [this ^Vec2 center ^float radius ^Color3f clr]
-  (println "drawSolidCircle is taking place!")
+  ;;(println "drawSolidCircle is taking place!")
   (circle-draw [(.x center) (.y center)]
                radius
                [(.x clr) (.y clr) (.z clr)]
@@ -60,7 +61,7 @@
 
 (defn -drawPoint
   ^void [this ^Vec2 point ^float radius-on-screen ^Color3f clr]
-  (println "drawSolidPolygon is taking place!")
+  ;;(println "drawSolidPolygon is taking place!")
   (circle-draw [(.x point) (.y point)]
                radius-on-screen
                [(.x clr) (.y clr) (.z clr)]
@@ -68,7 +69,7 @@
 
 (defn -drawSegment
   ^void [this ^Vec2 p1 ^Vec2 p2 ^Color3f clr]
-  (println "drawSegment is taking place!")
+  ;;(println "drawSegment is taking place!")
   (draw-lines
    (color (.x clr) (.y clr) (.z clr))
    (vertex (.x p1) (.y p1))
@@ -76,13 +77,13 @@
 
 (defn -drawAABB
   ^void [this ^AABB aabb ^Color3f clr]
-  (println "drawAABB is taking place!")
+  ;;(println "drawAABB is taking place!")
   (let [bl (.lowerBound aabb)
         tr (.upperBound aabb)
         [l b] [(.x bl) (.y bl)]
         [r t] [(.x tr) (.y tr)]]
     (draw-line-loop
-     (color clr)
+     (color (.x clr) (.y clr) (.z clr))
      (vertex l b)
      (vertex r b)
      (vertex r t)
@@ -90,16 +91,16 @@
 
 (defn -drawSolidPolygon
   ^void [this verts ^int v-count ^Color3f clr]
-  (println "drawSolidPolygon is taking place!")
+  ;;(println "drawSolidPolygon is taking place!")
   (draw-polygon
-   (color clr)
+   (color (.x clr) (.y clr) (.z clr))
    (let [vs (vec verts)]
      (doseq [r (range v-count)]
-       (vertex (vs r))))))
+       (vertex (.x (vs r)) (.y (vs r)) )))))
 
 (defn -drawTransform
   ^void [this ^Transform trans]
-  (println "drawTransform is taking place!")
+  ;;(println "drawTransform is taking place!")
   ;;(str "DebugDraw with transform: " (@(.state this) :vp-trans) )
   )
 
